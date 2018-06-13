@@ -1,0 +1,1 @@
+1,nameTest,stateTest,0,productTypeTest,1.0,1,10,10,0,1,10

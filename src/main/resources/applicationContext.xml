@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/mvc
+          http://www.springframework.org/schema/mvc/spring-mvc.xsd
+          http://www.springframework.org/schema/tx
+          http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+          http://www.springframework.org/schema/context
+          http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/aop  
+          http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+    <!-- Bean definitions go here -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="enviroment.properties"/>
+    </bean>
+    
+    <bean id="userIO" class="com.sg.flooringmastery.ui.ImplementIO"/>
+   
+    <bean id="view" class="com.sg.flooringmastery.ui.View">
+        <constructor-arg ref="userIO"/>
+    </bean>
+    
+    <bean id="fileMapper" class="com.sg.flooringmastery.dao.FileMapper"/>
+    
+    <bean id="stringObjectMap" class="java.util.HashMap" scope="prototype" >
+        <constructor-arg>
+            <map key-type="java.lang.String" value-type="java.lang.Object">
+            </map>
+        </constructor-arg>
+    </bean>
+        
+    
+    <bean id="orderDao" class="com.sg.flooringmastery.dao.OrderDaoFileImpl">
+        <constructor-arg ref="stringObjectMap"/>
+        <constructor-arg ref="fileMapper"/>
+        <constructor-arg value="Orders_"/>
+        <constructor-arg value="${isProduction}"/>
+    </bean>
+    
+    <bean id="taxRateDao" class="com.sg.flooringmastery.dao.TaxRateDaoFileImpl">
+        <constructor-arg ref="stringObjectMap"/>
+        <constructor-arg ref="fileMapper"/>
+        <constructor-arg value="taxes.txt"/>
+    </bean>
+    
+    <bean id="ProductDao" class="com.sg.flooringmastery.dao.ProductDaoFileImpl">
+        <constructor-arg ref="stringObjectMap"/>
+        <constructor-arg ref="fileMapper"/>
+        <constructor-arg value="products.txt"/>
+    </bean>
+    
+    
+    <bean id="service" class="com.sg.flooringmastery.service.ServiceLayerFileImpl">
+        <constructor-arg ref="orderDao"/>
+        <constructor-arg ref="taxRateDao"/>
+        <constructor-arg ref="ProductDao"/>
+    </bean>
+    
+    <bean id="controller" class="com.sg.flooringmastery.controller.Controller">
+        <constructor-arg ref="service"/>
+        <constructor-arg ref="view"/>
+    </bean>
+    
+            
+        
+</beans>
